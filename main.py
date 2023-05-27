@@ -18,11 +18,11 @@ class Answer:
 
 
 class Question:
-    def __init__(self, fact, start_pos, end_pos, answer):
+    def __init__(self, fact, start_pos, end_pos, answer_string):
         self.fact = fact
         self.start_pos = start_pos
         self.end_pos = end_pos
-        self.answer = answer
+        self.answer = Answer(answer_string)
 
     def render(self):
         s = self.fact.fact
@@ -31,9 +31,55 @@ class Question:
         s = s.replace('}', '')
         return s
 
+    def ask(self, count, total):
+        print(f'{count}/{total} {self.render()}')
+        guess = input('Your answer>')
+        if guess == 'q' or guess == 'Q':
+            return True
+        self.answer.guess = guess
+        self.answer.is_correct = self.answer.guess == self.answer.answer_string
+        if self.answer.is_correct:
+            print('Correct!')
+        else:
+            print(f'Sorry, wrong answer.  The correct answer is {self.answer.answer_string}.')
+        print()
+        return False
+
 
 class Test:
     questions = []
+
+
+def ask_questions(test):
+    total = len(test.questions)
+    for i, q in enumerate(test.questions):
+        quit_flag = q.ask(i+1, total)
+        if quit_flag:
+            return
+
+
+def show_summary(test):
+    total_correct = 0
+    total_skipped = 0
+    total_attempted = 0
+    for q in test.questions:
+        if q.answer.is_correct is None:
+            total_skipped += 1
+        else:
+            total_attempted += 1
+            if q.answer.is_correct:
+                total_correct += 1
+    print(f'Total questions: {total_skipped + total_attempted}')
+    print(f'Attempted      : {total_attempted}')
+    print(f'Skipped        : {total_skipped}')
+    print(f'Correct        : {total_correct}')
+    score = '{:.2f}'.format(total_correct / total_attempted)
+    print(f'Score: {total_correct} / {total_attempted} = {score}')
+
+
+def take_test(test):
+    ask_questions(test)
+    show_summary(test)
 
 
 def make_questions(facts, test):
@@ -57,6 +103,9 @@ def main():
             else:
                 all_facts.append(Fact(row[0], row[1]))
     make_questions(all_facts, test)
+    # TODO HACK
+    test.questions = test.questions[:3]
+    take_test(test)
     return test
 
 
