@@ -116,5 +116,4 @@ def main():
 
 
 if __name__ == '__main__':
-    facts = main()
-    print(facts)
+    main()
