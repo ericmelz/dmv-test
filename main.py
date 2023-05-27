@@ -69,11 +69,18 @@ def show_summary(test):
             total_attempted += 1
             if q.answer.is_correct:
                 total_correct += 1
+    print()
+    summary = 'Summary'
+    print(summary)
+    print('-' * len(summary))
     print(f'Total questions: {total_skipped + total_attempted}')
     print(f'Attempted      : {total_attempted}')
     print(f'Skipped        : {total_skipped}')
     print(f'Correct        : {total_correct}')
-    score = '{:.2f}'.format(total_correct / total_attempted)
+    if total_attempted > 0:
+        score = '{:.2f}'.format(total_correct / total_attempted)
+    else:
+        score = 'NaN'
     print(f'Score: {total_correct} / {total_attempted} = {score}')
 
 
@@ -104,9 +111,8 @@ def main():
                 all_facts.append(Fact(row[0], row[1]))
     make_questions(all_facts, test)
     # TODO HACK
-    test.questions = test.questions[:3]
+    test.questions = test.questions[:10]
     take_test(test)
-    return test
 
 
 if __name__ == '__main__':
