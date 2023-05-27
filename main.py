@@ -111,7 +111,7 @@ def main():
                 all_facts.append(Fact(row[0], row[1]))
     make_questions(all_facts, test)
     # TODO HACK
-    test.questions = test.questions[:10]
+    test.questions = test.questions[10:20]
     take_test(test)
 
 
