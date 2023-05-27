@@ -32,16 +32,17 @@ class Question:
         return s
 
     def ask(self, count, total):
-        print(f'{count}/{total} {self.render()}')
+        print(f'\033[1;37;40m{count}/{total} {self.render()}')
         guess = input('Your answer>')
         if guess == 'q' or guess == 'Q':
             return True
         self.answer.guess = guess
         self.answer.is_correct = self.answer.guess == self.answer.answer_string
         if self.answer.is_correct:
-            print('Correct!')
+            print('\033[1;32;40mCorrect!\033[1;37;40m')
         else:
-            print(f'Sorry, wrong answer.  The correct answer is {self.answer.answer_string}.')
+            print(f'Sorry, \033[1;31;40mwrong answer\033[1;37;40m.  The correct answer is '
+                  f'\033[1;32;40m{self.answer.answer_string}\033[1;37;40m.')
         print()
         return False
 
@@ -81,7 +82,7 @@ def show_summary(test):
         score = '{:.2f}'.format(total_correct / total_attempted)
     else:
         score = 'NaN'
-    print(f'Score: {total_correct} / {total_attempted} = {score}')
+    print(f'Score: {total_correct} / {total_attempted} = \033[1;32;40m{score}\033[1;37;40m')
 
 
 def take_test(test):
@@ -90,7 +91,7 @@ def take_test(test):
 
 
 def make_questions(facts, test):
-    answer_pattern = r'({\d})'
+    answer_pattern = r'({\d+})'
     for fact in facts:
         answer_iter = re.finditer(answer_pattern, fact.fact)
         for match in answer_iter:
@@ -110,8 +111,10 @@ def main():
             else:
                 all_facts.append(Fact(row[0], row[1]))
     make_questions(all_facts, test)
-    # TODO HACK
-    test.questions = test.questions[10:20]
+    # TODO HACK FOR TAKING TEST IN SMALL CHUNKS
+    block = 0
+    block_size = 10
+    test.questions = test.questions[block * block_size:(block + 1) * block_size]
     take_test(test)
 
 
