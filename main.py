@@ -1,4 +1,5 @@
 import csv
+import math
 import random
 import re
 
@@ -114,8 +115,9 @@ def main():
                 all_facts.append(Fact(row[0], row[1]))
     make_questions(all_facts, test)
     # For taking test in chunks
-    block = random.randint(0, 16)
-    block_size = 10
+    block_size = len(test.questions)
+    num_blocks = math.ceil(len(test.questions) / block_size)
+    block = random.randint(0, num_blocks-1)
     test.questions = test.questions[block * block_size:(block + 1) * block_size]
     random.shuffle(test.questions)
     print(f'Block {block}\n')
