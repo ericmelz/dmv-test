@@ -1,4 +1,5 @@
 import csv
+import random
 import re
 
 INPUT_FILE = 'data/DMV Driving Facts - Sheet1.csv'
@@ -82,7 +83,8 @@ def show_summary(test):
         score = '{:.2f}'.format(total_correct / total_attempted)
     else:
         score = 'NaN'
-    print(f'Score: {total_correct} / {total_attempted} = \033[1;32;40m{score}\033[1;37;40m')
+    color = '\033[1;32;40m' if score == '1.00' else '\033[1;31;40m'
+    print(f'Score: {total_correct} / {total_attempted} = {color}{score}\033[1;37;40m')
 
 
 def take_test(test):
@@ -111,10 +113,12 @@ def main():
             else:
                 all_facts.append(Fact(row[0], row[1]))
     make_questions(all_facts, test)
-    # TODO HACK FOR TAKING TEST IN SMALL CHUNKS
-    block = 0
+    # For taking test in chunks
+    block = random.randint(0, 16)
     block_size = 10
     test.questions = test.questions[block * block_size:(block + 1) * block_size]
+    random.shuffle(test.questions)
+    print(f'Block {block}\n')
     take_test(test)
 
 
